@@ -73,11 +73,16 @@ API
     The parser itself. The parser is an iterator, so it can be used if for loops, passed to ``list()`` and ``next()``,
     and used in list comprehensions.
 
-    ``constructor(stream, maxTextLength=None)``
-        :stream TextIOBase: The stream to parse.
+    ``__init__(stream, maxTextLength=None)``
+        :stream TextIOBase: The text stream to parse (e.g. a file object).
         :maxTextLength int|None: The maximum length of a text node; unlimited if None
 
-    
+    ``__next__() -> Node``
+        Get the next node in the stream.
+
+    ``__iter__() -> Iterator[Node``
+        The Parser itself.
+
 --------------
 ``class Node``
 --------------
