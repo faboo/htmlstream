@@ -78,42 +78,56 @@ API
         :maxTextLength int|None: The maximum length of a text node; unlimited if None
 
     
-.. topic:: ``class Node``
+--------------
+``class Node``
+--------------
 
     Base node class.
 
-.. topic:: ``class Text(Node)``
+--------------------
+``class Text(Node)``
+--------------------
 
     A text node. This includes any and all text between tags, comments, and doctypes.
 
     :text str: The content of the section of text.
 
-.. topic:: class Comment(Node)
+-----------------------
+``class Comment(Node)``
+-----------------------
 
     A comment node. All the text between the opening <!-- and closing -->.
 
     :comment str: The content of the comment.
 
-.. topic:: class DocType(Node)
+-----------------------
+``class DocType(Node)``
+-----------------------
 
     A doctype node.
 
     :doctype str: The specific doctype declared (i.e. "html").
 
-.. topic:: class Tag(Node)
+-------------------
+``class Tag(Node)``
+-------------------
 
     Base tag class.
 
     :tag str: The name of the tag (e.g. "p", "table", "body", etc.).
 
-.. topic:: class OpenTag(Tag)
+----------------------
+``class OpenTag(Tag)``
+----------------------
 
     An opening tag, including unclosed and self-closing tags.
 
     :selfClosing bool: True if the tag is self-closing (for example ``<br />``).
     :attributes dict[str,str|None]: The attributes included in tag. Toggle attributes have the value ``None``.
 
-.. topic:: class CloseTag(Tag)
+-----------------------
+``class CloseTag(Tag)``
+-----------------------
 
     A closing tag.
 
