@@ -66,7 +66,9 @@ API
 ===
 
 
-.. topic:: ``class Parser(Iterator[Node])``
+--------------------------------
+``class Parser(Iterator[Node])``
+--------------------------------
 
     The parser itself. The parser is an iterator, so it can be used if for loops, passed to ``list()`` and ``next()``,
     and used in list comprehensions.
