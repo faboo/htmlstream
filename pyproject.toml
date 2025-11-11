@@ -11,6 +11,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Compilers",
     "Topic :: Text Processing",
+    "Topic :: Text Processing :: Markup :: HTML",
     "Typing :: Typed",
 ]
 dependencies = [
