@@ -49,7 +49,7 @@ jobs:
     environment:
       name: testpypi
       # OPTIONAL: uncomment and update to include your PyPI project URL in the deployment status:
-      url: https://test.pypi.org/p/htmlstream
+      url: https://test.pypi.org/p/fa-htmlstream
       #
       # ALTERNATIVE: if your GitHub Release name is the PyPI project version string
       # ALTERNATIVE: exactly, uncomment the following line instead:
