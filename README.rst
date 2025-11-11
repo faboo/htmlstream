@@ -13,7 +13,6 @@ Examples
 
 Find the doc type of a document:
 
-
 .. code-block:: python
 
     from htmlstream import Parses, DocType, Text
@@ -27,4 +26,92 @@ Find the doc type of a document:
                     return node.doctype
                 else:
                     raise Exception('No doctype!')
+
+
+Extract all the text:
+
+.. code-block:: python
+
+    from htmlstream import Parses, Text
+
+    def getAllText(filename:str) -> str:
+        text = ''
+
+        with open(filename, encoding='utf-8') as file:
+            for node in Parser(file):
+                if isinstance(node, Text):
+                    text += node.text
+
+        return text
+
+Get the text of a specific element:
+
+.. code-block:: python
+
+    from htmlstream import Parses, OpenTag, Text
+
+    def getElementText(filename:str, eid:str) -> str:
+        inElement = False
+        with open(filename, encoding='utf-8') as file:
+            for node in Parser(file):
+                if inElement and isinstance(node, Text):
+                    return node.text
+                if isinstance(node, OpenTag) and node.attributes.get('id') == eid):
+                    inElement = True
+
+        return 'MISSING'
+
+===
+API
+===
+
+
+.. topic:: class Parser(Iterator[Node])
+
+    The parser itself. The parser is an iterator, so it can be used if for loops, passed to ``list()`` and ``next()``,
+    and used in list comprehensions.
+
+    ``Constructor(stream, maxTextLength=None)``
+        :stream TextIOBase: The stream to parse.
+        :maxTextLength int|None: The maximum length of a text node; unlimited if None
+
+    
+.. topic:: class Node
+
+    Base node class.
+
+.. topic:: class Text(Node)
+
+    A text node. This includes any and all text between tags, comments, and doctypes.
+
+    :text str: The content of the section of text.
+
+.. topic:: class Comment(Node)
+
+    A comment node. All the text between the opening <!-- and closing -->.
+
+    :comment str: The content of the comment.
+
+.. topic:: class DocType(Node)
+
+    A doctype node.
+
+    :doctype str: The specific doctype declared (i.e. "html").
+
+.. topic:: class Tag(Node)
+
+    Base tag class.
+
+    :tag str: The name of the tag (e.g. "p", "table", "body", etc.).
+
+.. topic:: class OpenTag(Tag)
+
+    An opening tag, including unclosed and self-closing tags.
+
+    :selfClosing bool: True if the tag is self-closing (for example ``<br />``).
+    :attributes dict[str,str|None]: The attributes included in tag. Toggle attributes have the value ``None``.
+
+.. topic:: class CloseTag(Tag)
+
+    A closing tag.
 
