@@ -66,21 +66,21 @@ API
 ===
 
 
-.. topic:: class Parser(Iterator[Node])
+.. topic:: ``class Parser(Iterator[Node])``
 
     The parser itself. The parser is an iterator, so it can be used if for loops, passed to ``list()`` and ``next()``,
     and used in list comprehensions.
 
-    ``Constructor(stream, maxTextLength=None)``
+    ``constructor(stream, maxTextLength=None)``
         :stream TextIOBase: The stream to parse.
         :maxTextLength int|None: The maximum length of a text node; unlimited if None
 
     
-.. topic:: class Node
+.. topic:: ``class Node``
 
     Base node class.
 
-.. topic:: class Text(Node)
+.. topic:: ``class Text(Node)``
 
     A text node. This includes any and all text between tags, comments, and doctypes.
 
