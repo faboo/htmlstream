@@ -1,7 +1,8 @@
 [project]
 name = "htmlstream"
 authors = [{name = "Ray Wallace", email = "rwallace3@proton.me"}]
-dynamic = ["version", "description"]
+version = "1.0.0"
+description = "A simple streaming HTML parser"
 license = "LGPL-3.0-or-later"
 readme = "README.rst"
 requires-python = ">=3.10"
@@ -52,14 +53,14 @@ commands = [
 
 [tool.tox.env.build]
 deps = [
-    "flit",
+    "build",
     "twine",
 ]
 commands = [
-    ["flit", "build"],
+    ["python", "-m", "build"],
     ["python", "-m", "twine", "check", "dist/*"],
 ]
 
 [build-system]
-requires = ["flit_core >=3.11,<4"]
-build-backend = "flit_core.buildapi"
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
