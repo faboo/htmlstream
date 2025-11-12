@@ -29,6 +29,12 @@ class ParseStream:
             self._read()
         return self._text
 
+    def startswith(self, string:str) -> bool:
+        while len(self._text) < 2*len(string) and not self._empty:
+            self._read()
+
+        return self._text.startswith(string)
+
     def consume(self, count:int|None = None) -> str:
         if count is None:
             string = self._text
@@ -62,14 +68,19 @@ class Text(Node):
         super().__init__()
         self.text = text
 
+    def __str__(self) -> str:
+        return self.text
+
 
 class Comment(Node):
     def __init__(self, stream:ParseStream) -> None:
         super().__init__()
         self.comment = stream.consumeUntil('-->').strip()
-        print(f'comment: {self.comment}')
 
         stream.consume(3)
+
+    def __str__(self) -> str:
+        return f'<!--{self.comment}-->'
 
 
 class DocType(Node):
@@ -95,6 +106,9 @@ class DocType(Node):
             self.doctype = parts[1]
         else:
             logging.warning('Missing doctype')
+    
+    def __str__(self) -> str:
+        return f'<!DOCTYPE {self.doctype}>'
 
 
 class Tag(Node):
@@ -133,8 +147,6 @@ class Tag(Node):
                 closed = True
                 contents = contents[1:]
 
-            print(f'contents is: {contents}')
-
         return (attrs, closed)
 
 
@@ -154,6 +166,9 @@ class CloseTag(Tag):
         if closed:
             logging.warning('Closing tag %s has trailing /', self.tag)
 
+    def __str__(self) -> str:
+        return f'</{self.tag}>'
+
 
 class OpenTag(Tag):
     # <a href="foo/bar.txt">
@@ -162,8 +177,9 @@ class OpenTag(Tag):
         self.tag = 'NONE'
         self.selfClosing = False
         self.attributes:dict[str,str|None] = {}
+        self.raw = stream.consumeUntil('>')
 
-        (attrs, self.selfClosing) = self._parse(stream.consumeUntil('>').strip())
+        (attrs, self.selfClosing) = self._parse(self.raw.strip())
         stream.consume(1)
 
         if attrs:
@@ -172,6 +188,8 @@ class OpenTag(Tag):
         if self.tag == 'NONE':
             logging.warning('Opening tag with no tag name')
 
+    def __str__(self) -> str:
+        return '<%s>' % (self.raw)
 
 
 class Parser(Iterator[Node]):
@@ -188,16 +206,16 @@ class Parser(Iterator[Node]):
 
         if not self.stream.text:
             raise StopIteration()
-        elif self.stream.text.startswith('<!--'):
+        elif self.stream.startswith('<!--'):
             self.stream.consume(4)
             node = Comment(self.stream)
-        elif self.stream.text.startswith('<!'):
+        elif self.stream.startswith('<!'):
             self.stream.consume(2)
             node = DocType(self.stream)
-        elif self.stream.text.startswith('</'):
+        elif self.stream.startswith('</'):
             self.stream.consume(2)
             node = CloseTag(self.stream)
-        elif self.stream.text.startswith('<'):
+        elif self.stream.startswith('<'):
             self.stream.consume(1)
             node = OpenTag(self.stream)
         else:

@@ -1,7 +1,7 @@
 [project]
 name = "fa-htmlstream"
 authors = [{name = "Ray Wallace", email = "rwallace3@proton.me"}]
-version = "1.0.0"
+version = "1.1.0"
 description = "A simple streaming HTML parser"
 license = "LGPL-3.0-or-later"
 readme = "README.rst"
@@ -48,7 +48,7 @@ commands = [
 
 [tool.tox.env.tests]
 commands = [
-    ["pytest", "{posargs}"]
+    ["pytest", "--log-level", "DEBUG", "{posargs}"]
 ]
 
 [tool.tox.env.build]
