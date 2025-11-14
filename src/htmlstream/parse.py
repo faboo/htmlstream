@@ -191,6 +191,12 @@ class OpenTag(Tag):
     def __str__(self) -> str:
         return '<%s>' % (self.raw)
 
+    def __getitem__(self, attr:str) -> str|None:
+        return self.attributes[attr]
+
+    def __contains__(self, attr:str) -> bool:
+        return attr in self.attributes
+
 
 class Parser(Iterator[Node]):
     def __init__(self, stream:TextIOBase, maxTextLength:int|None=None) -> None:

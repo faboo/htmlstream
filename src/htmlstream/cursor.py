@@ -41,6 +41,20 @@ class Cursor:
 
         return node
 
+    def findOpenTag(self, tag:str, attrs:dict[str,str]|None=None) -> Node|None:
+        if attrs is None:
+            attrs = {}
+
+        for node in self:
+            if isinstance(node, OpenTag) and node.tag == tag:
+                if attrs:
+                    for attr, value in attrs.items():
+                        if attr not in node or node[attr] != value:
+                            continue
+                break
+
+        return self.stack[-1] if self.stack else None
+
     def getInnerText(self) -> str:
         if not self.stack:
             raise CursorError('Stream not inside an opening tag')

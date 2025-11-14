@@ -6,6 +6,16 @@ HTMLStream is a simple stream parser for HTML. Rather than load an entire DOM in
 a io stream incrementally, resulting in a stream of HTML tags and text. The aim is to be fairly permissible, generating
 usable results from even malformed HTML.
 
+==========
+Installing
+==========
+
+With pip:
+
+.. code-block:: shell
+
+    $ pip install fa-htmlstream
+
 
 ========
 Examples
