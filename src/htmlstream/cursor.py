@@ -45,12 +45,15 @@ class Cursor:
         if attrs is None:
             attrs = {}
 
+        logging.info('Attributes: %s', attrs)
         for node in self:
-            if isinstance(node, OpenTag) and node.tag == tag:
-                if attrs:
-                    for attr, value in attrs.items():
-                        if attr not in node or node[attr] != value:
-                            continue
+            if isinstance(node, OpenTag) and (not tag or node.tag == tag):
+                #pylint: disable=use-a-generator
+                if not all(
+                        [ av[0] in node and node[av[0]] == av[1]
+                          for av in attrs.items()
+                        ]):
+                    continue
                 break
 
         return self.stack[-1] if self.stack else None

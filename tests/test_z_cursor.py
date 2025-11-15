@@ -33,12 +33,12 @@ def test_inner_text():
 def test_inner_html():
     with open('tests/data/deep_text.html', encoding='utf-8') as file:
         parser = Cursor(Parser(file))
-        expected_html = '\n\t<h1>A heading</h1>\n\t<p class="main">\n\tWhether we buy green things or orange,'\
-            +' <b class="first">all</b> is right in <b>bottom</b> of a barrel.\n\t</p>\n'
+        expected_html = '\n\tWhether we buy green things or orange,'\
+            +' <b class="first">all</b> is right in <b>bottom</b> of a barrel.\n\t'
         inner_html = ''
 
         for node in parser:
-            if isinstance(node, OpenTag) and node.tag == 'article':
+            if isinstance(node, OpenTag) and node.tag == 'p':
                 inner_html = parser.getInnerHtml()
                 break
 
@@ -59,7 +59,17 @@ def test_findOpenTag_with_attributes():
     with open('tests/data/deep_text.html', encoding='utf-8') as file:
         parser = Cursor(Parser(file))
 
-        found_tag = parser.findOpenTag('p', {'class':'main'})
+        found_tag = parser.findOpenTag('p', {'class':'second'})
+        assert isinstance(found_tag, OpenTag)
+        assert found_tag.tag == 'p'
+        assert found_tag['class'] == 'second'
+
+
+def test_findOpenTag_empty_tag():
+    with open('tests/data/deep_text.html', encoding='utf-8') as file:
+        parser = Cursor(Parser(file))
+
+        found_tag = parser.findOpenTag('', {'class':'main'})
         assert isinstance(found_tag, OpenTag)
         assert found_tag.tag == 'p'
         assert found_tag['class'] == 'main'

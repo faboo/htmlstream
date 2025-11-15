@@ -25,7 +25,7 @@ Find the doc type of a document:
 
 .. code-block:: python
 
-    from htmlstream import Parses, DocType, Text
+    from htmlstream import Parser, DocType, Text
 
     def getDocType(filename:str) -> str:
         with open(filename, encoding='utf-8') as file:
@@ -42,7 +42,7 @@ Extract all the text:
 
 .. code-block:: python
 
-    from htmlstream import Parses, Text
+    from htmlstream import Parser, Text
 
     def getAllText(filename:str) -> str:
         text = ''
@@ -58,7 +58,7 @@ Get the text of a specific element:
 
 .. code-block:: python
 
-    from htmlstream import Parses, OpenTag, Text
+    from htmlstream import Parser, OpenTag, Text
 
     def getElementText(filename:str, eid:str) -> str:
         inElement = False
@@ -70,6 +70,27 @@ Get the text of a specific element:
                     inElement = True
 
         return 'MISSING'
+
+
+----------
+The Cursor
+----------
+
+We can simplify some of the above using the ``Cursor`` wrapper class. The Cursor has additional state to keep track of
+where it is in the element hierarchy and provide utility operations.
+
+For example, get the text of a specific element becomes:
+
+.. code-block:: python
+
+    from htmlstream import Parser, Cursor
+
+    def getElementText(filename:str, eid:str) -> str:
+        with open(filename, encoding='utf-8') as file:
+            html = Cursor(Parser(file))
+            if not html.findOpenTag('', {'id': eid}):
+                return 'MISSING'
+            return html.getInnerText()
 
 ===
 API
@@ -83,14 +104,14 @@ API
     The parser itself. The parser is an iterator, so it can be used if for loops, passed to ``list()`` and ``next()``,
     and used in list comprehensions.
 
-    ``__init__(stream, maxTextLength=None)``
-        :stream TextIOBase: The text stream to parse (e.g. a file object).
-        :maxTextLength int|None: The maximum length of a text node; unlimited if None
+    ``__init__(stream: TextIOBase, maxTextLength: int|None = None)``
+        :stream: The text stream to parse (e.g. a file object).
+        :maxTextLength: The maximum length of a text node; unlimited if None
 
     ``__next__() -> Node``
         Get the next node in the stream.
 
-    ``__iter__() -> Iterator[Node``
+    ``__iter__() -> Iterator[Node]``
         The Parser itself.
 
 --------------
@@ -140,9 +161,50 @@ API
     :selfClosing bool: True if the tag is self-closing (for example ``<br />``).
     :attributes dict[str,str|None]: The attributes included in tag. Toggle attributes have the value ``None``.
 
+    ``__getitem__(attr:str) -> str|None``
+        Get the value of an attribute. Returns ``None`` for toggle attributes.
+        :attr: The name of the attribute
+
+    ``__contains__(attr:str) -> str|None``
+        Returns ``true`` if the specified attribute is set on the tag.
+        :attr: The name of the attribute
+
+
 -----------------------
 ``class CloseTag(Tag)``
 -----------------------
 
     A closing tag.
+
+
+--------------------------------
+``class Cursor(Iterator[Node])``
+--------------------------------
+
+    A utility class that wraps a ``Parser``, providing additional tree-streaming functionality. The Cursor moves through
+    the Parser's node stream linearly, effectively processing the HTML tree in a depth-first manner.
+
+    :stack list[OpenTag]: The current heirarchy of tags, where ``stack[0]`` is the root element of of the document (e.g.
+        `<html`), and ``stack[-1]`` is the opening tag of the element the cursor is currently inside of.
+    :depth int: The number of elements deep into the tree the curser is.
+
+    ``__init__(parser: Parser)``
+        :parser: The Parser to wrap.
+
+    ``__next__() -> Node``
+        Get the next node in the stream.
+
+    ``__iter__() -> Iterator[Node]``
+        The Cursor itself.
+
+    ``findOpenTag(tag: str, attrs: dict[str, str]|None = None) -> Node|None``
+        Move the cursor the next matching open tag. Returns the tag (or None, if the exact tag couldn't be found).
+        :tag: The tag name to search for (e.g. "body" or "img"). If empty, matches any tag.
+        :attr: Optional specific attributes the tag must have
+    
+    ``getInnerText() -> str``
+        Get the text of all of the text nodes within the current element.
+
+    ``getInnerHtml() -> str``
+        Get the html within the current element.
 
