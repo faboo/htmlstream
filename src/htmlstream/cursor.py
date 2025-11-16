@@ -45,7 +45,6 @@ class Cursor:
         if attrs is None:
             attrs = {}
 
-        logging.info('Attributes: %s', attrs)
         for node in self:
             if isinstance(node, OpenTag) and (not tag or node.tag == tag):
                 #pylint: disable=use-a-generator
