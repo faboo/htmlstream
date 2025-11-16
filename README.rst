@@ -185,7 +185,7 @@ API
     the Parser's node stream linearly, effectively processing the HTML tree in a depth-first manner.
 
     :stack list[OpenTag]: The current heirarchy of tags, where ``stack[0]`` is the root element of of the document (e.g.
-        `<html`), and ``stack[-1]`` is the opening tag of the element the cursor is currently inside of.
+        `<html>`), and ``stack[-1]`` is the opening tag of the element the cursor is currently inside of.
     :depth int: The number of elements deep into the tree the curser is.
 
     ``__init__(parser: Parser)``
